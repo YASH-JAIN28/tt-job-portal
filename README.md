@@ -1,5 +1,13 @@
 # TT Job Portal
 
+## Demo login
+
+The deployed frontend includes a client-side demo account that works without a
+database or authentication API:
+
+- Email: `demo@ttjobportal.com`
+- Password: `TTDemo@123`
+
 ## Authentication setup
 
 1. Copy `.env.example` to `.env`.

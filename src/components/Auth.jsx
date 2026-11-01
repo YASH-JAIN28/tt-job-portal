@@ -1,5 +1,15 @@
 import { useState } from "react";
 
+const DEMO_ACCOUNT = {
+  email: "demo@ttjobportal.com",
+  password: "TTDemo@123",
+  user: {
+    id: "demo-user",
+    name: "Demo User",
+    email: "demo@ttjobportal.com",
+  },
+};
+
 function Auth({ onAuthenticated }) {
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -20,6 +30,20 @@ function Auth({ onAuthenticated }) {
     setIsSubmitting(true);
 
     try {
+      if (
+        !isRegistering &&
+        form.email.trim().toLowerCase() === DEMO_ACCOUNT.email &&
+        form.password === DEMO_ACCOUNT.password
+      ) {
+        localStorage.setItem("ttjobportal_token", "demo-token");
+        localStorage.setItem(
+          "ttjobportal_user",
+          JSON.stringify(DEMO_ACCOUNT.user),
+        );
+        onAuthenticated(DEMO_ACCOUNT.user);
+        return;
+      }
+
       const response = await fetch(
         `/api/auth/${isRegistering ? "register" : "login"}`,
         {
@@ -151,6 +175,30 @@ function Auth({ onAuthenticated }) {
                 : "Sign in"}
           </button>
         </form>
+        {!isRegistering && (
+          <div className="demo-login mt-4 p-3 border rounded bg-light">
+            <p className="fw-semibold mb-1">Try the demo account</p>
+            <p className="small text-muted mb-2">
+              Email: {DEMO_ACCOUNT.email}
+              <br />
+              Password: {DEMO_ACCOUNT.password}
+            </p>
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => {
+                setForm((previous) => ({
+                  ...previous,
+                  email: DEMO_ACCOUNT.email,
+                  password: DEMO_ACCOUNT.password,
+                }));
+                setMessage("");
+              }}
+            >
+              Fill demo credentials
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );
